@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360">
+  <!-- Transparent background (no rect) -->
+  <g fill="#E50914" font-family="Arial Black, Impact, Inter, sans-serif" font-weight="900">
+    <text x="50%" y="52%" text-anchor="middle" dominant-baseline="middle">
+      <tspan font-size="180">S</tspan>
+      <tspan dx="10" font-size="150">M</tspan>
+      <tspan dx="8" font-size="110">A</tspan>
+      <tspan dx="6" font-size="95">R</tspan>
+      <tspan dx="6" font-size="95">T</tspan>
+      <tspan dx="6" font-size="110">F</tspan>
+      <tspan dx="10" font-size="150">L</tspan>
+      <tspan dx="10" font-size="180">I</tspan>
+      <tspan dx="12" font-size="180">X</tspan>
+    </text>
+  </g>
+</svg>
