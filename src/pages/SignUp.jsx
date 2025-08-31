@@ -1,14 +1,31 @@
 import React, { useState } from 'react';
 import Logo from '../assets/Logo.svg';
+import { validateForm } from '../utils/validation';
 
 const SignUp = () => {
-  const [name, setName] = useState('');
+  const [fullName, setFullName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errors, setErrors] = useState({});
 
   const submitForm = (e) => {
     e.preventDefault();
-    console.log({ name, email, password });
+    const newErrors = validateForm(
+      { fullName, email, password, confirmPassword },
+      'signup'
+    );
+    setErrors(newErrors);
+
+    // ✅ Only submit if no errors
+    if (Object.keys(newErrors).length === 0) {
+      console.log('Form submitted:', {
+        fullName,
+        email,
+        password,
+        confirmPassword,
+      });
+    }
   };
 
   return (
@@ -29,32 +46,59 @@ const SignUp = () => {
           <h2 className='text-white text-3xl font-bold mb-6'>Sign Up</h2>
 
           <form onSubmit={submitForm} className='flex flex-col gap-4'>
-            <input
-              type='text'
-              placeholder='Full Name'
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              className='p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600'
-              required
-            />
+            <div>
+              <input
+                type='text'
+                placeholder='Full Name'
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                className='p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600 w-full'
+              />
+              {errors.fullName && (
+                <p className='text-red-500 text-sm mt-1'>{errors.fullName}</p>
+              )}
+            </div>
 
-            <input
-              type='email'
-              placeholder='Email or phone number'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className='p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600'
-              required
-            />
+            <div>
+              <input
+                type='text'
+                placeholder='Email or phone number'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className='p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600 w-full'
+              />
+              {errors.email && (
+                <p className='text-red-500 text-sm mt-1'>{errors.email}</p>
+              )}
+            </div>
 
-            <input
-              type='password'
-              placeholder='Password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className='p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600'
-              required
-            />
+            <div>
+              <input
+                type='password'
+                placeholder='Password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className='p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600 w-full'
+              />
+              {errors.password && (
+                <p className='text-red-500 text-sm mt-1'>{errors.password}</p>
+              )}
+            </div>
+
+            <div>
+              <input
+                type='password'
+                placeholder='Confirm Password'
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                className='p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600 w-full'
+              />
+              {errors.confirmPassword && (
+                <p className='text-red-500 text-sm mt-1'>
+                  {errors.confirmPassword}
+                </p>
+              )}
+            </div>
 
             <button
               type='submit'

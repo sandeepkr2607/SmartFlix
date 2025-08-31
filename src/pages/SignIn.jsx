@@ -1,13 +1,21 @@
 import React, { useState } from 'react';
 import Logo from '../assets/Logo.svg';
+import { validateForm } from '../utils/validation';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState({});
 
   const submitForm = (e) => {
     e.preventDefault();
-    console.log(email, password);
+    const newErrors = validateForm({ email, password }, 'signin');
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      console.log('Form submitted:', { email, password });
+      // ✅ API call or navigation logic goes here
+    }
   };
 
   return (
@@ -28,22 +36,35 @@ const SignIn = () => {
           <h2 className='text-white text-3xl font-bold mb-6'>Sign In</h2>
 
           <form onSubmit={submitForm} className='flex flex-col gap-4'>
-            <input
-              type='email'
-              placeholder='Email or phone number'
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className='p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600'
-            />
+            {/* Email */}
+            <div>
+              <input
+                type='text'
+                placeholder='Email or phone number'
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className='p-3 w-full rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600'
+              />
+              {errors.email && (
+                <p className='text-red-500 text-sm mt-1'>{errors.email}</p>
+              )}
+            </div>
 
-            <input
-              type='password'
-              placeholder='Password'
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className='p-3 rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600'
-            />
+            {/* Password */}
+            <div>
+              <input
+                type='password'
+                placeholder='Password'
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className='p-3 w-full rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600'
+              />
+              {errors.password && (
+                <p className='text-red-500 text-sm mt-1'>{errors.password}</p>
+              )}
+            </div>
 
+            {/* Submit Button */}
             <button
               type='submit'
               className='bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded mt-4'
@@ -51,6 +72,7 @@ const SignIn = () => {
               Sign In
             </button>
 
+            {/* Options */}
             <div className='flex justify-between items-center text-sm text-gray-400 mt-2'>
               <label className='flex items-center gap-2'>
                 <input type='checkbox' className='accent-red-600' />
@@ -62,6 +84,7 @@ const SignIn = () => {
             </div>
           </form>
 
+          {/* Sign Up Redirect */}
           <p className='text-gray-400 mt-6'>
             New to Smartflix?{' '}
             <a href='/sign-up' className='text-white hover:underline'>
@@ -70,6 +93,7 @@ const SignIn = () => {
             .
           </p>
 
+          {/* reCAPTCHA Disclaimer */}
           <p className='text-gray-500 text-xs mt-4'>
             This page is protected by Google reCAPTCHA to ensure you’re not a
             bot.{' '}
