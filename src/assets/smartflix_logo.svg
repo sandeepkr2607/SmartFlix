@@ -1,0 +1,7 @@
+<svg width="200" height="300" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg">
+  <rect x="0" y="0" width="200" height="300" fill="none"/>
+  <path d="M50,20 L50,280 C50,280 60,260 80,260 C100,260 110,280 110,280 L110,20 C110,20 100,40 80,40 C60,40 50,20 50,20 Z" fill="#E50914"/>
+  <text x="70" y="60" font-family="Arial, sans-serif" font-size="24" font-weight="bold" fill="#FFFFFF" transform="rotate(-90 70 60)">
+    SMARTFLIX
+  </text>
+</svg>
