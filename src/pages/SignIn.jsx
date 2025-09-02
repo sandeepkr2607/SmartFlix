@@ -1,20 +1,42 @@
 import React, { useState } from 'react';
 import Logo from '../assets/Logo.svg';
 import { validateForm } from '../utils/validation';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
+
+import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false); // 🔹 loading state
 
-  const submitForm = (e) => {
+  const navigate = useNavigate();
+
+  const submitForm = async (e) => {
     e.preventDefault();
     const newErrors = validateForm({ email, password }, 'signin');
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      console.log('Form submitted:', { email, password });
-      // ✅ API call or navigation logic goes here
+      setLoading(true); // 🔹 start loading
+      try {
+        const userCredential = await signInWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const user = userCredential.user;
+        console.log('✅ Signed in:', user);
+
+        navigate('/');
+      } catch (error) {
+        console.error('❌ Signin error:', error.message);
+        setErrors({ firebase: error.message });
+      } finally {
+        setLoading(false); // 🔹 stop loading no matter what
+      }
     }
   };
 
@@ -44,6 +66,7 @@ const SignIn = () => {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className='p-3 w-full rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600'
+                disabled={loading}
               />
               {errors.email && (
                 <p className='text-red-500 text-sm mt-1'>{errors.email}</p>
@@ -58,6 +81,7 @@ const SignIn = () => {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 className='p-3 w-full rounded bg-neutral-800 text-white outline-none focus:ring-2 focus:ring-red-600'
+                disabled={loading}
               />
               {errors.password && (
                 <p className='text-red-500 text-sm mt-1'>{errors.password}</p>
@@ -67,10 +91,19 @@ const SignIn = () => {
             {/* Submit Button */}
             <button
               type='submit'
-              className='bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded mt-4'
+              disabled={loading} // 🔹 disable button when loading
+              className={`${
+                loading
+                  ? 'bg-red-400 cursor-not-allowed'
+                  : 'bg-red-600 hover:bg-red-700'
+              } text-white font-semibold py-3 rounded mt-4`}
             >
-              Sign In
+              {loading ? 'Signing In...' : 'Sign In'}
             </button>
+
+            {errors.firebase && (
+              <p className='text-red-500 text-sm mt-2'>{errors.firebase}</p>
+            )}
 
             {/* Options */}
             <div className='flex justify-between items-center text-sm text-gray-400 mt-2'>

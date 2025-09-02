@@ -1,6 +1,9 @@
 import React, { useState } from 'react';
 import Logo from '../assets/Logo.svg';
 import { validateForm } from '../utils/validation';
+import { createUserWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../firebaseConfig';
+import { useNavigate } from 'react-router-dom';
 
 const SignUp = () => {
   const [fullName, setFullName] = useState('');
@@ -8,8 +11,11 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  const submitForm = (e) => {
+  const navigate = useNavigate();
+
+  const submitForm = async (e) => {
     e.preventDefault();
     const newErrors = validateForm(
       { fullName, email, password, confirmPassword },
@@ -17,14 +23,27 @@ const SignUp = () => {
     );
     setErrors(newErrors);
 
-    // ✅ Only submit if no errors
     if (Object.keys(newErrors).length === 0) {
-      console.log('Form submitted:', {
-        fullName,
-        email,
-        password,
-        confirmPassword,
-      });
+      setLoading(true);
+      try {
+        const userCredential = await createUserWithEmailAndPassword(
+          auth,
+          email,
+          password
+        );
+        const user = userCredential.user;
+        console.log('✅ User registered:', user);
+
+        navigate('/sign-in');
+      } catch (error) {
+        console.error('❌ Signup error:', error.message);
+        setErrors((prev) => ({
+          ...prev,
+          firebase: error.message,
+        }));
+      } finally {
+        setLoading(false); // 🔹 stop loading no matter what
+      }
     }
   };
 
@@ -104,8 +123,12 @@ const SignUp = () => {
               type='submit'
               className='bg-red-600 hover:bg-red-700 text-white font-semibold py-3 rounded mt-4'
             >
-              Sign Up
+              {loading ? 'Signing In...' : 'Sign In'}
             </button>
+            {/* Firebase error */}
+            {errors.firebase && (
+              <p className='text-red-500 text-sm mt-2'>{errors.firebase}</p>
+            )}
           </form>
 
           <p className='text-gray-400 mt-6'>
